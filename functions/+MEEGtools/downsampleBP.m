@@ -23,14 +23,14 @@ function EEG = downsampleBP(EEG,filtOpt,saveOpt)
 %% LPF with or without downsample
 if filtOpt.resample.do
     
+    Fs = EEG.srate;
     Fr = filtOpt.resample.Fr;
     Fc = filtOpt.LP.Fc;
     TBW = filtOpt.LP.TBW;
     
-    
     if isfield(filtOpt.LP,'causal') && filtOpt.LP.causal
         x = EEG.data';
-        Fs = EEG.srate;
+        
     end
     
     nyq = Fr / 2;
@@ -44,8 +44,12 @@ if filtOpt.resample.do
     else
         s = '';
     end
-    commentLPF = sprintf('Resampled: Fr=%.2fHz, Fc=%.2fHz, TBW=%.2fHz%s',Fr,Fc,TBW,s);
-
+    
+    % just to get the parameters used by pop_resample for the comment / log
+    passbandRipples = 2e-3;
+    [~, p, q, filterOrder] = makeResampleFilterCoeffs(Fs, Fr, Fc, TBW, passbandRipples);
+    
+    commentLPF = sprintf('Resampled: p=%i, q=%i, Fc=%.2fHz, TBW=%.2fHz, passbandRipples=%.1e, filtOrd=%i%s',p,q,Fc,TBW,passbandRipples,filterOrder,s);
     
 elseif filtOpt.LP.do
     
@@ -57,9 +61,10 @@ elseif filtOpt.LP.do
     TBW = filtOpt.LP.TBW;
     passbandRipples = filtOpt.LP.passbandRipples;
     
-    [filterCoeffs,~,~] = makeResampleFilterCoeffs(EEG.srate, EEG.srate, Fc, TBW, passbandRipples);
+    [filterCoeffs,~,~,filterOrder] = makeResampleFilterCoeffs(EEG.srate, EEG.srate, Fc, TBW, passbandRipples);
     EEG = firfilt(EEG, filterCoeffs);
-    commentLPF = sprintf('LP: Fc=%.2fHz, TBW=%.2fHz',Fc,TBW);
+    %     commentLPF = sprintf('LP: Fc=%.2fHz, TBW=%.2fHz',Fc,TBW);
+    commentLPF = sprintf('LP: Fc=%.2fHz, TBW=%.2fHz, passbandRipples=%.1e, filtOrd=%i',Fc,TBW,passbandRipples,filterOrder);
     %     commentLPF = ['LP: Fc=', int2str(Fc), 'Hz, TBW=', int2str(TBW), 'Hz'];
 else
     commentLPF = [];
