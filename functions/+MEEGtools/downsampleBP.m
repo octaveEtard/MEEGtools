@@ -99,11 +99,7 @@ end
 
 %% comments
 if ~isempty(commentLPF) || ~isempty(commentHPF)
-    comments = char(...
-        'FILTERING:',...
-        commentLPF,...
-        commentHPF);
-    
+    comments = {'FILTERING:';commentLPF;commentHPF};
     EEG = MEEGtools.addComments(EEG,comments);
 end
 

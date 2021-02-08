@@ -1,6 +1,5 @@
 function [out,outDir] = runICAinFolder(EEG,ICAopt)
 
-datestr(now,'yyyymmdd_HHMMSS_')
 outDir = fullfile(ICAopt.tmpdir,sprintf('%s_%i',datestr(now,'yyyymmdd_HHMMSS'),randi(999)));
 
 if ~exist(outDir, 'dir')
