@@ -10,26 +10,25 @@ function EEG = runAndClassifyICA(EEG,ICAopt,opt)
 if opt.doICLabel
     EEG = iclabel(EEG);
     classification = EEG.etc.ic_classification;
+    EEG = MEEGtools.addComments(EEG,'ICs classified with ICLabel');
 end
 
-% % pop_saveset(EEG,'filename','testICA','filepath','')
+pop_saveset(EEG,'filename','testICA','filepath','')
+
 % % visual check;
-% % plot topoplot
 % idx = 1:20;
-% pop_topoplot(EEG, 0, idx ,'',[4,5],0,'electrodes','on');
-% % print classification
-% [~,c]=max(EEG.etc.ic_classification.ICLabel.classifications,[],2);
-% c = EEG.etc.ic_classification.ICLabel.classes(c);
-% arrayfun(@(i) fprintf('%i %s\n',i,c{i}),idx);
-% % inspect some component
-% i0 = [14,15];
-% pop_prop( EEG, 0, i0, NaN, {'freqrange',[0.5 80] });
+% spec_opt = {'freqrange',[0.5 80] };
+% erp_opt = {};
+% [com] = pop_viewprops( EEG, 0, idx, spec_opt, erp_opt, 1, 'ICLabel');
+% % inspect a component
+% i0 = 1;
+% pop_prop_extended(EEG, 0, i0, NaN, spec_opt, erp_opt, 1, 'ICLabel')
 
 
 %% ------ save ICA results in a standalone file
 if opt.save.separateFile.do
     results = [];
-    
+     
     results.ICAopt = ICAopt;
     
     results.icainv = EEG.icainv;
