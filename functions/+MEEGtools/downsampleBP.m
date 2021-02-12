@@ -44,7 +44,7 @@ if filtOpt.resample.do
     
     % just to get the parameters used by pop_resample for the comment / log
     passbandRipples = 2e-3;
-    [~, p, q, filterOrder] = makeResampleFilterCoeffs(Fs, Fr, Fc, TBW, passbandRipples);
+    [~, p, q, filterOrder] = MEEGtools.makeResampleFilterCoeffs(Fs, Fr, Fc, TBW, passbandRipples);
     
     commentLPF = sprintf('Resampled: p=%i, q=%i, Fc=%.2fHz, TBW=%.2fHz, passbandRipples=%.1e, filtOrd=%i%s',p,q,Fc,TBW,passbandRipples,filterOrder,s);
     
@@ -58,7 +58,7 @@ elseif filtOpt.LP.do
     TBW = filtOpt.LP.TBW;
     passbandRipples = filtOpt.LP.passbandRipples;
     
-    [filterCoeffs,~,~,filterOrder] = makeResampleFilterCoeffs(EEG.srate, EEG.srate, Fc, TBW, passbandRipples);
+    [filterCoeffs,~,~,filterOrder] = MEEGtools.makeResampleFilterCoeffs(EEG.srate, EEG.srate, Fc, TBW, passbandRipples);
     EEG = firfilt(EEG, filterCoeffs);
     %     commentLPF = sprintf('LP: Fc=%.2fHz, TBW=%.2fHz',Fc,TBW);
     commentLPF = sprintf('LP: Fc=%.2fHz, TBW=%.2fHz, passbandRipples=%.1e, filtOrd=%i',Fc,TBW,passbandRipples,filterOrder);
