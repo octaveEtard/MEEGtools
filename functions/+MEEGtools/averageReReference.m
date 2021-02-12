@@ -38,7 +38,7 @@ comments = char(...
 EEG.comments = pop_comments(EEG.comments, '', comments, 1);
 
 % adding average reference step to name
-EEG.filename = addProc('AVR', EEG.filename);
+EEG.setname = [EEG.setname,'-AVR'];
 
 end
 %

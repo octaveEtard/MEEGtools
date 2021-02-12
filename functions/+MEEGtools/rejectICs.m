@@ -40,11 +40,14 @@ EEG = pop_icflag(EEG, thresholds);
 if strcmp(rok,'keep')
     % inverting to keep ICs flagged by pop_icflag
     EEG.reject.gcompreject = ~EEG.reject.gcompreject;
+elseif ~strcmp(rok,'reject')
+    error('Unknown keyword');
 end
 
 rej = EEG.reject.gcompreject;
 
 % removing flagged components
+setName = EEG.setname;
 EEG = pop_subcomp( EEG, [], false, false);
 
 % add comments
@@ -55,7 +58,7 @@ s_ = sprintf(' %i',find(rej));
 s{9} = sprintf('IC rejected: %s',s_);
 
 EEG = MEEGtools.addComments(EEG,s);
-
+EEG.setname = [setName,'-ICr'];
 end
 %
 %

@@ -10,6 +10,9 @@ if 0 < nMissing
     comments = sprintf('Interpolate (spherical) %i missing channels%s',nMissing,s);
     EEG = MEEGtools.addComments(EEG,comments);
 end
+
+EEG.setname = [EEG.setname,'-INTP'];
+
 end
 %
 %

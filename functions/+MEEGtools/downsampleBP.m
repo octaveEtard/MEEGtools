@@ -1,4 +1,4 @@
-function EEG = downsampleBP(EEG,filtOpt,saveOpt)
+function EEG = downsampleBP(EEG,filtOpt)
 % downsampleBP Downsample & bandpass EEG data
 %
 % --- filtOpt ---
@@ -14,12 +14,10 @@ function EEG = downsampleBP(EEG,filtOpt,saveOpt)
 % filtOpt.HP.TBW = highpass transition bandwidth
 % filtOpt.HP.passbandRipples = highpass passband ripples (typically 1e-3)
 %
-% --- saveOpt ---
-% saveOpt.do = save EEG set
-% saveOpt.folder = where to save
-% EEG.filename will be used as save name for the dataset
 %
-%
+
+setName = EEG.setname;
+
 %% LPF with or without downsample
 if filtOpt.resample.do
     
@@ -30,7 +28,6 @@ if filtOpt.resample.do
     
     if isfield(filtOpt.LP,'causal') && filtOpt.LP.causal
         x = EEG.data';
-        
     end
     
     nyq = Fr / 2;
@@ -104,25 +101,13 @@ if ~isempty(commentLPF) || ~isempty(commentHPF)
 end
 
 %% Adding proc string to the name
-proc = makeProcString(filtOpt);
-[~,filename,~] = fileparts(EEG.filename);
+proc = MEEGtools.makeFiltString(filtOpt);
 
 if ~isempty(proc)
-    proc = [proc, '-Fs-', int2str(EEG.srate)];
-    
-    filename = addProc(proc, filename);
-else
+    EEG.setname = [setName,'-',proc];
+% else
     % no filtering / resampling was done
     % not changing the name
-end
-EEG.filename = filename;
-
-%%
-if saveOpt.do
-    if ~exist(saveOpt.folder, 'dir')
-        mkdir(saveOpt.folder);
-    end
-    EEG = pop_saveset(EEG, 'filename', [EEG.filename, '.set'], 'filepath', saveOpt.folder);
 end
 end
 %
